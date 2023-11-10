@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Flex,
     FormControl,
     FormErrorMessage,
     FormLabel,
@@ -15,7 +16,13 @@ export function MemberSignup() {
     const [passwordCheck, setPasswordCheck] = useState("");
     const [email, setEmail] = useState("");
 
+    const [idAvailable, setIdAvailable] = useState(false);
+
     let submitAvailable = true;
+
+    if (!idAvailable) {
+        submitAvailable = false;
+    }
 
     if (password != passwordCheck) {
         submitAvailable = false;
@@ -37,12 +44,38 @@ export function MemberSignup() {
             .finally(() => console.log("done"));
     }
 
+    function handleIdCheck() {
+        const searchParam = new URLSearchParams();
+        searchParam.set("id", id);
+
+        axios
+            .get("/api/member/check?" + searchParam.toString())
+            .then(() => {
+                setIdAvailable(false);
+            })
+            .catch((error) => {
+                if (error.response.status === 404) {
+                    setIdAvailable(true);
+                }
+            });
+    }
+
     return (
         <Box>
             <h1>회원 가입</h1>
-            <FormControl>
+            <FormControl isInvalid={!idAvailable}>
                 <FormLabel>id</FormLabel>
-                <Input value={id} onChange={(e) => setId(e.target.value)} />
+                <Flex>
+                    <Input
+                        value={id}
+                        onChange={(e) => {
+                            setId(e.target.value);
+                            setIdAvailable(false);
+                        }}
+                    />
+                    <Button onClick={handleIdCheck}>중복확인</Button>
+                </Flex>
+                <FormErrorMessage>ID 중복체크를 해주세요.</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={password.length === 0}>
                 <FormLabel>password</FormLabel>
@@ -51,6 +84,7 @@ export function MemberSignup() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+
                 <FormErrorMessage>암호를 입력해 주세요.</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={password != passwordCheck}>
