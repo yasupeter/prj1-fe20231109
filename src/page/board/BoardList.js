@@ -26,9 +26,6 @@ function Pagination({ pageInfo }) {
     pageNumbers.push(i);
   }
 
-  console.log(pageNumbers);
-  console.log(pageInfo);
-
   return (
     <Box>
       {pageNumbers.map((pageNumber) => (
