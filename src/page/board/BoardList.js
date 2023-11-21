@@ -23,6 +23,7 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import * as PropTypes from "prop-types";
+import { faImages } from "@fortawesome/free-regular-svg-icons";
 
 function PageButton({ variant, pageNumber, children }) {
   const [params] = useSearchParams();
@@ -150,6 +151,12 @@ export function BoardList() {
                     <Badge>
                       <ChatIcon />
                       {board.countComment}
+                    </Badge>
+                  )}
+                  {board.countFile > 0 && (
+                    <Badge>
+                      <FontAwesomeIcon icon={faImages} />
+                      {board.countFile}
                     </Badge>
                   )}
                 </Td>
